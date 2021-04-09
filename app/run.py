@@ -45,7 +45,12 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    genre_per = round(100*genre_counts/genre_counts.sum(), 2)
+    cat_num = df.drop(['id', 'message', 'genre'], axis = 1).sum()
+    cat_num = cat_num.sort_values(ascending = False)
+    cat = list(cat_num.index)
     
+    colours = ['yellow', 'green', 'red']
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -65,6 +70,33 @@ def index():
                 'xaxis': {
                     'title': "Genre"
                 }
+            }
+        },
+        {
+            "data": [
+              {
+                "type": "pie",
+                "name": "Genre",
+                "pull": 0,
+                "domain": {
+                  "x": genre_per,
+                  "y": genre_names
+                },
+                "marker": {
+                  "colours": [
+                    "#7fc97f",
+                    "#beaed4",
+                    "#fdc086"
+                   ]
+                },
+                "textinfo": "label+value",
+                "hoverinfo": "all",
+                "labels": genre_names,
+                "values": genre_counts
+              }
+            ],
+            "layout": {
+              "title": "Count and % of Messages by Genre"
             }
         }
     ]

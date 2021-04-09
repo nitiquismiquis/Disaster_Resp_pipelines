@@ -35,6 +35,7 @@ def load_data(database_filepath):
     '''
     engine = create_engine('sqlite:///data/DisasterResponse.db')
     df = pd.read_sql_table('data/DisasterResponse.db', con=engine)
+    # Covert all data to binary - removing all lines that have 2´s
     df = df[df['related'] != '2']
     X = df['message']
     Y = df[df.columns[4:]].apply(pd.to_numeric, errors ='ignore')
@@ -72,7 +73,7 @@ def build_model():
     '''
     OUTPUT
     A pipeline using cv grid search
-    '''
+    '''    
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
@@ -80,11 +81,11 @@ def build_model():
     ])
 
     parameters = {
-        'vect__ngram_range': ((1, 1), (1, 2)),
+        ##'vect__ngram_range': ((1, 1), (1, 2)),
         #'vect__max_df': (0.5, 1.0),
-        'vect__max_features': (None, 5000, 10000),
+        ##'vect__max_features': (None, 5000, 10000),
         'tfidf__use_idf': (True, False),
-        #'vect__max_features': (None, 5000),
+        'vect__max_features': (None, 5000),
         'clf__estimator__n_estimators': [10,20]
     }
     
@@ -93,14 +94,14 @@ def build_model():
     
     return cv
 
-
 def evaluate_model(model, X_test, Y_test, category_names):
     '''
     INPUT --> imports the model, X_test, Y_test and category_names and predicts the X_test
     OUTPUT --> Y_pred
-    '''
+    '''    
     Y_pred = model.predict(X_test)
-    
+    print(classification_report(Y_test, Y_pred, target_names=category_names))
+
 
 def save_model(model, model_filepath):
     '''

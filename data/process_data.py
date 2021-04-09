@@ -67,11 +67,13 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-    engine = create_engine('sqlite:///data/DisasterResponse.db')
-    df.to_sql(database_filename, engine, index=False)
     '''
     Saves new database into Disaster_response_pipelines.db.
     '''
+    engine = create_engine('sqlite:///data/DisasterResponse.db')
+    df.to_sql(database_filename, engine, if_exists = 'replace', index=False)
+
+
 def main():
     '''
     1. Loads and merges both data sets.
