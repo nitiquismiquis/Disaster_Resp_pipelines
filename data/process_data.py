@@ -4,7 +4,12 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
-
+    '''
+    INPUT
+    Loads the messages_filepath and the categories_filepath
+    OUTPUT
+    df --> dataframe with both databases merged in.
+    '''
     messages_filepath = 'data/disaster_messages.csv'
     categories_filepath = 'data/disaster_categories.csv'
 
@@ -23,7 +28,12 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     ### Creates columns with correspondent values of the 'categories' column
-
+    '''
+    INPUT
+    df --> dataframe returned by the load_merge_data function
+    OUTPUT
+    df --> cleans and removes duplicates from original dataframe
+    '''
     # Provides a list with all the columns extracted from the category column
     cat = df.loc[0,'categories']
     cat_list = cat.split(';')
@@ -59,9 +69,15 @@ def clean_data(df):
 def save_data(df, database_filename):
     engine = create_engine('sqlite:///data/DisasterResponse.db')
     df.to_sql(database_filename, engine, index=False)
-
-
+    '''
+    Saves new database into Disaster_response_pipelines.db.
+    '''
 def main():
+    '''
+    1. Loads and merges both data sets.
+    2. Cleans a removes duplicates.
+    3. Saves new database into Disaster_response_pipelines.db.
+    '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
