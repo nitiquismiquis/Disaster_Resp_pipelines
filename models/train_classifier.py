@@ -24,6 +24,15 @@ import pickle
 
 
 def load_data(database_filepath):
+    '''
+    INPUT
+    database_filepath --> loads the DisasterResponse.db 
+
+    OUTPUT
+    X - pandas dataframe, X matrix
+    y - pandas dataframe, response variable
+    category_names - list of the y vble names
+    '''
     engine = create_engine('sqlite:///data/DisasterResponse.db')
     df = pd.read_sql_table('data/DisasterResponse.db', con=engine)
     df = df[df['related'] != '2']
@@ -34,6 +43,13 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    '''
+    INPUT
+    Any text --> loads the DisasterResponse.db 
+
+    OUTPUT
+    A normalised, tokenized, without stopwords and lemmatized text
+    '''
     # Normalize text and remove punctuation
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     
@@ -53,6 +69,10 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    OUTPUT
+    A pipeline using cv grid search
+    '''
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
@@ -73,16 +93,34 @@ def build_model():
     
     return cv
 
-def evaluate_model(model, X_test, Y_test, category_names):
-    Y_pred = model.predict(X_test)
 
+def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    INPUT --> imports the model, X_test, Y_test and category_names and predicts the X_test
+    OUTPUT --> Y_pred
+    '''
+    Y_pred = model.predict(X_test)
+    
 
 def save_model(model, model_filepath):
+    '''
+    INPUT --> model and model_filepath
+    OUTPUT --> saves the model on a 'Classifier.pkl'
+    '''
     filename = 'Classifier.pkl'
     pickle.dump(model, open(filename, 'wb'))
 
 
 def main():
+    '''
+    INPUT --> takes 3 arguments: The train classifier, the database and the name of the file the model will be saved on
+    OUTPUT --> Load the database
+               Train_test split the data from the database
+               Create a model
+               Train the model
+               Evaluate the model
+               Save the model
+    '''
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
